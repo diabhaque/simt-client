@@ -1,13 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { Upload, message } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import ImageContext from "../context/image.context";
 import ImgCrop from "antd-img-crop";
 
-const PhotoUpload = () => {
+const PhotoUpload = ({ image, setImage }) => {
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
-  const [image, setImage] = useContext(ImageContext);
+  // const [image, setImage] = useContext(ImageContext);
   const { Dragger } = Upload;
 
   const dummyRequest = ({ file, onSuccess }) => {
@@ -44,7 +42,6 @@ const PhotoUpload = () => {
     if (info.file.status === "done") {
       getBase64(info.file.originFileObj, (imageURL) => {
         setLoading(false);
-        setImageUrl(imageURL);
         setImage(imageURL);
       });
     }
@@ -74,7 +71,7 @@ const PhotoUpload = () => {
           border: "1px solid black",
         }}
       >
-        {Object.keys(image).length > 1 ? (
+        {image ? (
           <img
             src={image}
             alt="avatar"

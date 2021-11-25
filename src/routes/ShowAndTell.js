@@ -1,42 +1,45 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Card, message, Button, Spin, Input } from "antd";
-import ImageContext from "../context/image.context";
 import PhotoUpload from "../utils/PhotoUpload";
 import axios from "axios";
 
 const { TextArea } = Input;
 
 const ShowAndTell = () => {
-  const [image] = useContext(ImageContext);
+  const [image, setImage] = useState(undefined);
+  const [text, setText] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const [fetched, setFetched] = useState(undefined);
 
   const generateCaption = () => {
-    if (Object.keys(image).length > 1) {
+    if (image && text) {
       setLoading(true);
       setFetched(undefined);
-      console.log("sending...");
+
       const data = {
-        image: image,
+        text,
+        image,
       };
+
       axios
-        .post("http://localhost:5000/predict", data, {
+        .post("http://localhost:5000/translate/cnmt", data, {
           headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
           },
         })
         .then((res) => {
-          console.log();
           setLoading(false);
-          setFetched(res.data.res);
+          console.log(res)
+          setFetched(res.data.result);
         })
         .catch((err) => {
           message.error("There's been an error");
+          console.log(err)
           setLoading(false);
         });
     } else {
-      message.error("Please upload an image first");
+      message.error("Please upload both an image and a text.");
     }
   };
   return (
@@ -51,7 +54,7 @@ const ShowAndTell = () => {
         }}
         headStyle={{ display: "flex", justifyContent: "center" }}
         bodyStyle={{ padding: "0px" }}
-        cover={<PhotoUpload />}
+        cover={<PhotoUpload image={image} setImage={setImage} />}
       ></Card>
       <br />
       <br />
@@ -68,6 +71,7 @@ const ShowAndTell = () => {
         bodyStyle={{ padding: "0px" }}
         cover={
           <TextArea
+            onChange={(e) => setText(e.target.value)}
             style={{
               border: "1px solid black",
             }}
