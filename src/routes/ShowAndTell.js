@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card, message, Button, Spin, Input } from "antd";
 import PhotoUpload from "../utils/PhotoUpload";
 import axios from "axios";
+import { HOSTNAME } from "../config/config";
 
 const { TextArea } = Input;
 
@@ -22,7 +23,7 @@ const ShowAndTell = () => {
       };
 
       axios
-        .post("http://localhost:5000/translate/cnmt", data, {
+        .post(`http://${HOSTNAME}/translate/cnmt`, data, {
           headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
