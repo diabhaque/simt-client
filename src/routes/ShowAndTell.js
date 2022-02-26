@@ -12,7 +12,7 @@ const ShowAndTell = () => {
   const [loading, setLoading] = useState(false);
   const [fetched, setFetched] = useState(undefined);
 
-  const generateCaption = () => {
+  const generateCaption = (mode) => {
     if (image && text) {
       setLoading(true);
       setFetched(undefined);
@@ -22,8 +22,10 @@ const ShowAndTell = () => {
         image,
       };
 
+      const endpoint = `http://localhost:5000/translate/${mode}`
+
       axios
-        .post(`http://${HOSTNAME}/translate/cnmt`, data, {
+        .post(endpoint, data, {
           headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
@@ -84,8 +86,15 @@ const ShowAndTell = () => {
       {loading ? (
         <Spin />
       ) : (
-        <Button onClick={generateCaption} style={{ border: "1px solid black" }}>
-          Generate Caption!
+        <Button onClick={() => generateCaption("cnmt")} style={{ border: "1px solid black" }}>
+          Generate Caption! (CNMT)
+        </Button>
+      )}
+      {loading ? (
+        <Spin />
+      ) : (
+        <Button onClick={() => generateCaption("cmmt")} style={{ border: "1px solid black" }}>
+          Generate Caption! (CMMT)
         </Button>
       )}
       <br />
